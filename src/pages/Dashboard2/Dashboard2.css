@@ -1,0 +1,54 @@
+.Dash_Main {
+  width: auto;
+  height: auto;
+  margin: auto;
+  display: flex;
+}
+
+.Value_Section,
+.Graph_Section {
+  width: 50%;
+  height: auto;
+}
+.Graph_Section {
+  width: 100vh;
+  justify-content: space-around;
+  border-left: 1px solid black;
+}
+.Graphs,
+.Values {
+  width: 70%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  
+}
+
+.Values {
+  gap: 30px;
+}
+.Value_Section{
+  background-color: oldlace;
+  padding-top: 20px;
+  padding-bottom:  20px;
+}
+.Value {
+  width: 100%;
+  height: auto;
+  margin: auto;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  grid-template-columns: 1fr 0.2fr 0.2fr;
+}
+
+.Value h2 {
+  font-size: 24px;
+}
+
+.Value img {
+  width: 30px;
+}

@@ -1,0 +1,77 @@
+.Main_Section {
+  width: auto;
+  height: 100vh;
+  margin: auto;
+  margin-top: 100px;
+}
+
+#container3D{
+  background-repeat: no-repeat;
+  background-position: 0%;
+  background-size: 1100px 1000px;
+}
+
+#container3D canvas{
+  position: relative;
+  z-index:999999;
+}
+
+.Quote{
+  top: 10%;
+  left: 1%;
+  position: absolute;
+  z-index: 99999999999999;
+  color: white;
+  font-size: 42px;
+  font-family: "Metal Mania", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.Fuhrer{
+  position: absolute;
+  width: auto;
+  margin-top: 60px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  transform: scaleX(1);
+
+}
+
+.Test{
+  height: 100vh;
+}
+
+.Test canvas{
+  height: 100vh;
+}
+
+body {
+  background-color: #f2f2f2;
+}
+
+.Line_Section {
+  margin-top: 80px;
+}
+
+.Ambient {
+  max-width: fit-content;
+  height: auto;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border: 3px solid black;
+}
+
+.LineGraphs {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-around;
+}
+.LineChart {
+  width: 35%;
+}
