@@ -10,13 +10,6 @@ import ThreeScene from "./pages/Model";
 import axios from 'axios';
 
 // Make a GET request to fetch data from the backend
-axios.get('http://localhost:3001/api/data')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
 
 const ENDPOINT = 'http://localhost:5173';
 function App() {
@@ -53,11 +46,11 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route
             path="/dashboard"
-            element={<Dashboard arduinoData={arduinoData} />}
+            element={<Dashboard />}
           />
           <Route
             path="/dashboard2"
-            element={<Dashboard2 arduinoData={arduinoData} />}
+            element={<Dashboard2  />}
           />
           <Route path="/model" element={<ThreeScene/>} />
           <Route path="/d2" element={<D2/>} />
