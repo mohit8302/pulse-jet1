@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Dashboard2 from "./pages/Dashboard2/Dashboard2";
 import socketIOClient from 'socket.io-client';
 import React,{useState,useEffect} from "react";
-import D2 from "./pages/Dashboard2/d2";
+
 import ThreeScene from "./pages/Model";
 import axios from 'axios';
 
@@ -33,7 +33,6 @@ function App() {
             element={<Dashboard2  />}
           />
           <Route path="/model" element={<ThreeScene/>} />
-          <Route path="/d2" element={<D2/>} />
         </Routes>
       </BrowserRouter>
 
