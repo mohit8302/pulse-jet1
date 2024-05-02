@@ -37,24 +37,7 @@ ChartJS.register(
 const ENDPOINT = "http://localhost:5173";
 
 const Dashboard2 = () => {
-//   const { id } = useParams();
-//     const {loading, blog} = useDashboard2({
-//         id: id || ""
-//     });
 
-
-// if (loading) {
-//     return <div>
-//         <Header/>
-    
-//         <div className="h-screen flex flex-col justify-center">
-            
-//             <div className="flex justify-center">
-//                 <Spinner />
-//             </div>
-//         </div>
-//     </div>
-// }
   const critical = 40;
   const [arduinoData, setArduinoData] = useState({
     inletTemp: 700,
@@ -66,7 +49,6 @@ const Dashboard2 = () => {
   });
 const [cop, setCOP] = useState(0);
 const [connectiveHT, setConnectiveHT] = useState(0);
-const [exitVelocity, setExitVelocity] = useState(0);
 const [reynoldsNumber, setReynoldsNumber] = useState(0);
 const [efficiency, setEfficiency] = useState(0);
 const [prRatio, setPrRatio] = useState(0);
@@ -74,7 +56,7 @@ const [spStRatio, setSpStRatio] = useState(0);
 const [machNumber, setMachNumber] = useState(0);
 const [specificImpulse, setSpecificImpulse] = useState(0);
 const [outTemperature, setOutTemperature] = useState([]);
-  const exitvelocity = 127.52;
+  const exitVelocity = 127.52;
 
 
 const tempAtCC=1500
@@ -108,7 +90,29 @@ useEffect(() => {
   
   const newSpecificImpulse = calculateSpecificImpulse(arduinoData.exhaustPressure,arduinoData.fuelIntake);
     setSpecificImpulse(newSpecificImpulse);
+    const newCOP = calculateCOP(arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure,arduinoData.inletTemp,tempAtCC,arduinoData.fuelIntake,machNumber);
+    setCOP(newCOP);
     
+    // Calculate and update other values here
+    const newConnectiveHT = calculateConnectiveHT(arduinoData.outletTemp,tempAtCC,arduinoData.exhaustPressure);
+    setConnectiveHT(newConnectiveHT);
+
+  
+    const newReynoldsNumber = calculateReynoldsNumber(exitVelocity);
+    setReynoldsNumber(newReynoldsNumber);
+
+    const newEfficiency = calculateEfficiency(arduinoData.blowerPressure,arduinoData.fuelIntake,arduinoData.inletTemp,arduinoData.outletTemp,machNumber,arduinoData.exhaustPressure);
+    setEfficiency(newEfficiency);
+
+    const newPrRatio = calculatePrRatio(machNumber);
+    setPrRatio(newPrRatio);
+
+    const newSpStRatio = calculateSpStRatio(arduinoData.inletTemp,arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure);
+    setSpStRatio(newSpStRatio);
+
+    const newMachNumber = calculateMachNumber(exitVelocity);
+    setMachNumber(newMachNumber);
+
 
 
   socket.on("arduino-data", (data) => {
@@ -122,8 +126,6 @@ useEffect(() => {
     const newConnectiveHT = calculateConnectiveHT(arduinoData.outletTemp,tempAtCC,arduinoData.exhaustPressure);
     setConnectiveHT(newConnectiveHT);
 
-    const newExitVelocity = calculateExitVelocity(amplitudeDamping,specificImpulse,arduinoData.blowerPressure,arduinoData.exhaustPressure);
-    setExitVelocity(newExitVelocity);
 
     const newReynoldsNumber = calculateReynoldsNumber(exitVelocity);
     setReynoldsNumber(newReynoldsNumber);
@@ -158,16 +160,7 @@ useEffect(() => {
     return newTemperatureQueue;
   });
 }, [arduinoData.outletTemp]);
-useEffect(() => {
-  setexitvelocity((prevPressure) => {
-    const newPressureQueue = [...prevPressure, exitvelocity];
-    if (newPressureQueue.length > 8) {
-      newPressureQueue.shift();
-    }
-    return newPressureQueue;
-  });
-}, [exitVelocity]);
-  
+
 
   return (
     <>
@@ -226,7 +219,7 @@ useEffect(() => {
               />
             </div>
             <div className="Value">
-              <h2>PR Ratio :</h2>
+              <h2>Pressure Ratio :</h2>
               <div className="Case_Box">
                 <h1>{prRatio}</h1>
               </div>
@@ -295,7 +288,7 @@ useEffect(() => {
                   datasets: [
                     {
                       label: "Exhaust Pressure",
-                      data: exitvelocity,
+                      data: exitVelocity,
                       backgroundColor: "green",
                       borderColor: "green",
                       borderWidth: 1,

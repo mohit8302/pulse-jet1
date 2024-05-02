@@ -10,7 +10,7 @@ export const calculateCOP = (outletTemp,blowerPressure,exhaustPressure,inletTemp
       let p3=exhaustPressure;
 
       let sol=(0.2226*h)/(n*(t3*p1-p3*t1));
-      return sol;
+      return sol.toFixed(4);
 
   }
 
@@ -30,7 +30,7 @@ export const calculateConnectiveHT=(outletTemp,tempAtCC,exhaustPressure)=>{
 export const  calculateReynoldsNumber=(exitVelocity)=>{
     let v=exitVelocity;
     let sol=(0.4*v)/(3.178*((10)**(-5)));
-    return sol;
+    return sol.toFixed(4);
 }
 
 
@@ -50,7 +50,7 @@ export const calculateEfficiency=(blowerP,fuelIntake,inletTemp,outletTemp,machNo
 export const  calculatePrRatio=(machNo)=>{
     let M=machNo;
     let sol=(1+(0.2)*(M**2))**3.5;
-    return sol;
+    return sol.toFixed(4);
 }
 
 
@@ -60,12 +60,12 @@ export const  calculateSpStRatio=(inletTemp,outletTemp,blowerPressure,exhaustPre
     let p1=blowerPressure;
     let p3=exhaustPressure;
     let sol=((p1-p3)/(t1-t3))
-    return sol
+    return sol.toFixed(4)
 }
 
 export const calculateMachNumber=(exitVelocity)=>{
     let v=exitVelocity;
-    return v/331.3;
+    return (v/331.3).toFixed(4);
 }
 
 export const calculateSpecificImpulse=(exhaustPressure,fuelIntake)=>{

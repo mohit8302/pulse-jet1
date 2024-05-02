@@ -24,7 +24,7 @@ export const Auth = ({ type }) => {
           localStorage.setItem("token", jwt.jwt);
         }
 
-        navigate("/dashboard");
+        navigate("/model");
       } catch (e) {
         console.log(e);
         alert("Error while signing up");

@@ -7,13 +7,29 @@ import socketIOClient from 'socket.io-client';
 import React,{useState,useEffect} from "react";
 import D2 from "./pages/Dashboard2/d2";
 import ThreeScene from "./pages/Model";
+import axios from 'axios';
 
+// Make a GET request to fetch data from the backend
+axios.get('http://localhost:3001/api/data')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
 
 const ENDPOINT = 'http://localhost:5173';
 function App() {
   const [arduinoData, setArduinoData] = useState(null);
 
   useEffect(() => {
+    axios.get('http://localhost:3001/api/data')
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
     const socket = socketIOClient(ENDPOINT);
 
     // Listen for Arduino data
@@ -35,13 +51,31 @@ function App() {
           <Route path="/" element={<Signup/>} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard2" element={<Dashboard2 />} />
+          <Route
+            path="/dashboard"
+            element={<Dashboard arduinoData={arduinoData} />}
+          />
+          <Route
+            path="/dashboard2"
+            element={<Dashboard2 arduinoData={arduinoData} />}
+          />
           <Route path="/model" element={<ThreeScene/>} />
           <Route path="/d2" element={<D2/>} />
         </Routes>
       </BrowserRouter>
-      {arduinoData && <p>Data from Arduino: {arduinoData}</p>}
+      {arduinoData && (
+        <div>
+          <p>Data from Arduino:</p>
+          <ul>
+            <li>Inlet Temperature: {arduinoData.inletTemp}</li>
+            <li>Outlet Temperature: {arduinoData.outletTemp}</li>
+            <li>Blower Pressure: {arduinoData.blowerPressure}</li>
+            <li>Exhaust Pressure: {arduinoData.exhaustPressure}</li>
+            <li>Fuel Intake: {arduinoData.fuelIntake}</li>
+            <li>Smoke Quality: {arduinoData.smokeQuality}</li>
+          </ul>
+        </div>
+      )}
     </>
   );
 }

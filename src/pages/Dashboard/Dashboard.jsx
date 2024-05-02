@@ -33,21 +33,7 @@ ChartJS.register(
 const ENDPOINT = "http://localhost:5173";
 
 const Dashboard = () => {
-//   const { id } = useParams();
-//   const {loading} = useDashboard({id});
 
-
-// if (loading ) {
-//     return <div>
-//       <Header/>
-    
-//         <div className="h-screen flex flex-col justify-center">
-//             <div className="flex justify-center">
-//                 <Spinner />
-//             </div>
-//         </div>
-//     </div>
-// }
   const [inTemperature, setInTemperature] = useState([]);
   const [outTemperature, setOutTemperature] = useState([]);
   const [exhaustPressure, setexhaustPressure] = useState([]);

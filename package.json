@@ -15,6 +15,7 @@
     "@react-three/fiber": "^8.16.3",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
+    "cors": "^2.8.5",
     "faker": "^6.6.6",
     "mathjs": "^12.4.2",
     "numeric": "^1.2.6",
