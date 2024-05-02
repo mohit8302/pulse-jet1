@@ -60,7 +60,7 @@ function App() {
         <div>
           <p>Data from Arduino:</p>
           <ul>
-            <li>Inlet Temperature: {arduinoData.inletTemp}</li>
+            <li>Outlet inlet Temperature: {arduinoData.inletTemp}</li>
             <li>Outlet Temperature: {arduinoData.outletTemp}</li>
             <li>Blower Pressure: {arduinoData.blowerPressure}</li>
             <li>Exhaust Pressure: {arduinoData.exhaustPressure}</li>
