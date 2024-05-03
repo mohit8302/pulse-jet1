@@ -21,6 +21,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { data } from "autoprefixer";
 // import { useDashboard2 } from "../../hooks";
 
 
@@ -37,15 +38,34 @@ ChartJS.register(
 const ENDPOINT = "http://localhost:5173";
 
 const Dashboard2 = () => {
+  const [inTemperature, setInTemperature] = useState([]);
+  const [outTemperature, setOutTemperature] = useState([]);
+  const [exhaustPressure, setexhaustPressure] = useState([]);
+  const [fuelRate, setfuelRate] = useState([]);
+  const [smokeQuality, setSmokeQuality] = useState([]);
+  const [blowerPressure, setBlowerPressure] = useState([]);
+
 
   const critical = 40;
   const [arduinoData, setArduinoData] = useState({
-    inletTemp: 700,
-    outletTemp: 500,
-    blowerPressure:230,
-    exhaustPressure: 180,
+    inletTemp: 123,
+    outletTemp: 834,
+    blowerPressure: 134,
+    exhaustPressure: 230,
     fuelIntake: 3,
-    smokeQuality: 80,
+    smokeQuality: 230,
+  });
+  const [lineGraphData, setLineGraphData] = useState({
+    labels: ["0"],
+    datasets: [
+      {
+        label: "Temperature",
+        data: [0],
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
   });
 const [cop, setCOP] = useState(0);
 const [connectiveHT, setConnectiveHT] = useState(0);
@@ -55,7 +75,6 @@ const [prRatio, setPrRatio] = useState(0);
 const [spStRatio, setSpStRatio] = useState(0);
 const [machNumber, setMachNumber] = useState(0);
 const [specificImpulse, setSpecificImpulse] = useState(0);
-const [outTemperature, setOutTemperature] = useState([]);
   const exitVelocity = 127.52;
 
 
@@ -63,60 +82,63 @@ const tempAtCC=1500
 const pressureAtCC=12000 
 const amplitudeDamping = 0.6324;
 const phaseShift=8.43 +'\u00B0' ;
-const updateOutletTemp = () => {
-  const newInletTemp = Math.floor(Math.random() * 1501);
 
-  setArduinoData((prevData) => ({
-    ...prevData,
-    outletTemp: newInletTemp,
-  }));
-};
-
-useEffect(() => {
-  updateOutletTemp();
- 
-
-  const intervalId = setInterval(() => {
-    updateOutletTemp();
-  
-  }, 5000);
-
-  return () => clearInterval(intervalId);
-}, []);
 
 
 useEffect(() => {
   const socket = socketIOClient(ENDPOINT);
   
-  const newSpecificImpulse = calculateSpecificImpulse(arduinoData.exhaustPressure,arduinoData.fuelIntake);
-    setSpecificImpulse(newSpecificImpulse);
-    const newCOP = calculateCOP(arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure,arduinoData.inletTemp,tempAtCC,arduinoData.fuelIntake,machNumber);
-    setCOP(newCOP);
-    
-    // Calculate and update other values here
-    const newConnectiveHT = calculateConnectiveHT(arduinoData.outletTemp,tempAtCC,arduinoData.exhaustPressure);
-    setConnectiveHT(newConnectiveHT);
 
   
-    const newReynoldsNumber = calculateReynoldsNumber(exitVelocity);
-    setReynoldsNumber(newReynoldsNumber);
+  // const newSpecificImpulse = calculateSpecificImpulse(arduinoData.exhaustPressure,arduinoData.fuelIntake);
+  //   setSpecificImpulse(newSpecificImpulse);
+  //   const newCOP = calculateCOP(arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure,arduinoData.inletTemp,tempAtCC,arduinoData.fuelIntake,machNumber);
+  //   setCOP(newCOP);
+    
+  //   // Calculate and update other values here
+  //   const newConnectiveHT = calculateConnectiveHT(arduinoData.outletTemp,tempAtCC,arduinoData.exhaustPressure);
+  //   setConnectiveHT(newConnectiveHT);
 
-    const newEfficiency = calculateEfficiency(arduinoData.blowerPressure,arduinoData.fuelIntake,arduinoData.inletTemp,arduinoData.outletTemp,machNumber,arduinoData.exhaustPressure);
-    setEfficiency(newEfficiency);
+  
+  //   const newReynoldsNumber = calculateReynoldsNumber(exitVelocity);
+  //   setReynoldsNumber(newReynoldsNumber);
 
-    const newPrRatio = calculatePrRatio(machNumber);
-    setPrRatio(newPrRatio);
+  //   const newEfficiency = calculateEfficiency(arduinoData.blowerPressure,arduinoData.fuelIntake,arduinoData.inletTemp,arduinoData.outletTemp,machNumber,arduinoData.exhaustPressure);
+  //   setEfficiency(newEfficiency);
 
-    const newSpStRatio = calculateSpStRatio(arduinoData.inletTemp,arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure);
-    setSpStRatio(newSpStRatio);
+  //   const newPrRatio = calculatePrRatio(machNumber);
+  //   setPrRatio(newPrRatio);
 
-    const newMachNumber = calculateMachNumber(exitVelocity);
-    setMachNumber(newMachNumber);
+  //   const newSpStRatio = calculateSpStRatio(arduinoData.inletTemp,arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure);
+  //   setSpStRatio(newSpStRatio);
+
+  //   const newMachNumber = calculateMachNumber(exitVelocity);
+  //   setMachNumber(newMachNumber);
 
 
 
   socket.on("arduino-data", (data) => {
-    setArduinoData(data);
+    setInTemperature(data.inletTemp);
+    setOutTemperature(data.outletTemp);
+    setExhaustPressure(data.exhaustPressure);
+    setFuelIntake(data.fuelIntake);
+    setSmokeQuality(data.smokeQuality);
+
+
+
+
+    setLineGraphData((prevData) => {
+      const newData = {
+        labels: [...prevData.labels, data.outletTemp],
+        datasets: [
+          {
+            ...prevData.datasets[0],
+            data: [...prevData.datasets[0].data, data.inletTemp],
+          },
+        ],
+      };
+      return newData;
+    });
     
     //Calculate COP whenever inlet or outlet temperature changes
     const newCOP = calculateCOP(connectiveHT,efficiency,arduinoData.outletTemp,arduinoData.blowerPressure,arduinoData.exhaustPressure,arduinoData.inletTemp);
@@ -151,16 +173,6 @@ useEffect(() => {
     socket.disconnect(); // Clean up socket connection when component unmounts
   };
 }, []);
-useEffect(() => {
-  setOutTemperature((prevTemperature) => {
-    const newTemperatureQueue = [...prevTemperature, arduinoData.outletTemp];
-    if (newTemperatureQueue.length > 8) {
-      newTemperatureQueue.shift();
-    }
-    return newTemperatureQueue;
-  });
-}, [arduinoData.outletTemp]);
-
 
   return (
     <>
@@ -281,95 +293,77 @@ useEffect(() => {
           </div>
         </div>
         <div className="Graph_Section">
-          <div className="Graphs">
+        <div className="Graphs">
           <Line
-                data={{
-                  labels: [1,2,3,4,5,6,7,8],
-                  datasets: [
-                    {
-                      label: "Exhaust Pressure",
-                      data: exitVelocity,
-                      backgroundColor: "green",
-                      borderColor: "green",
-                      borderWidth: 1,
-                    },
-                    {
-                      label: "Outlet Temp",
-                      data: outTemperature,
-                      backgroundColor: "red",
-                      borderColor: "red",
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      position: "bottom",
-                    },
-                    title: {
-                      display: true,
-                      text: "Exit Velocity Vs Outlet Temperature ",
-                    },
-                  },
-                  scales: {
-                    x: {
-                      min: 0,
-                      max: 1500,
-                    },
-                    y: {
-                      min: 0,
-                      max: 1500,
-                    },
-                  },
-                }}
-              />
-              <Line
-                data={{
-                  labels: [1,2,3,4,5,6,7,8],
-                  datasets: [
-                    {
-                      label: "Exhaust Pressure",
-                      data: exitVelocity,
-                      backgroundColor: "green",
-                      borderColor: "green",
-                      borderWidth: 1,
-                    },
-                    {
-                      label: "Outlet Temp",
-                      data: outTemperature,
-                      backgroundColor: "red",
-                      borderColor: "red",
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      position: "bottom",
-                    },
-                    title: {
-                      display: true,
-                      text: "Exhaust Pressure Vs Outlet Temperature ",
-                    },
-                  },
-                  scales: {
-                    x: {
-                      min: 0,
-                      max: 1500,
-                    },
-                    y: {
-                      min: 0,
-                      max: 1500,
-                    },
-                  },
-                }}
-              />
-          </div>
+            data={lineGraphData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+                title: {
+                  display: true,
+                  text: "Exhaust Pressure Vs Outlet Temp",
+                },
+              },
+              scales: {
+                x: {
+                  min: 0,
+                  max: 1500,
+                },
+                y: {
+                  min: 0,
+                  max: 1500,
+                },
+              },
+            }}
+          />
+          <Line
+            data={{
+              labels: lineGraphData.labels,
+              datasets: [
+                {
+                  label: "Mach Number",
+                  data: [machNumber],
+                  backgroundColor: "green",
+                  borderColor: "green",
+                  borderWidth: 1,
+                },
+                {
+                  label: "Specific Impulse",
+                  data: [specificImpulse],
+                  backgroundColor: "red",
+                  borderColor: "red",
+                  borderWidth: 1,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+                title: {
+                  display: true,
+                  text: "Mach Number Vs Specific Impulse",
+                },
+              },
+              scales: {
+                x: {
+                  min: 0,
+                  max: 1500,
+                },
+                y: {
+                  min: 0,
+                  max: 1500,
+                },
+              },
+            }}
+          />
         </div>
+      </div>
       </div>
     </>
   );
