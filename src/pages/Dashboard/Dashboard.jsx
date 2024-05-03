@@ -29,7 +29,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const ENDPOINT = "https://pulse-backend-ag3fk60ce-mohits-projects-173e27ad.vercel.app";
+const ENDPOINT = "https://pulse-backend-ag3fk60ce-mohits-projects-173e27ad.vercel.app/server.js";
 
 
 const Dashboard = () => {
