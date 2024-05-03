@@ -62,130 +62,24 @@ const Dashboard = () => {
     ],
   });
 
-  const updateInletTemp = () => {
-    const newInletTemp = Math.floor(Math.random() * 1501);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      inletTemp: newInletTemp,
-    }));
-  };
-  const updateOutletTemp = () => {
-    const newInletTemp = Math.floor(Math.random() * 1501);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      outletTemp: newInletTemp,
-    }));
-  };
-  const updateBlowerPressure = () => {
-    const newBlowerPressure = Math.floor(Math.random() * 301);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      blowerPressure: newBlowerPressure,
-    }));
-  };
-
-  const updateExhaustPre = () => {
-    const newInletPre = Math.floor(Math.random() * 300);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      exhaustPressure: newInletPre,
-    }));
-  };
-
-
-  const updateFuelRate = () => {
-    const newInletFuel = Math.floor(Math.random() * 6);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      fuelIntake: newInletFuel,
-    }));
-  };
-  const updateSmokeQuality = () => {
-    const newSmokeQuality = Math.floor(Math.random() * 301);
-
-    setArduinoData((prevData) => ({
-      ...prevData,
-      smokeQuality: newSmokeQuality,
-    }));
-  };
-  
-  
-
-  useEffect(() => {
-    updateInletTemp();
-    updateOutletTemp();
-    updateExhaustPre();
-    updateFuelRate();
-    updateBlowerPressure();
-    updateSmokeQuality();
-
-    const intervalId = setInterval(() => {
-      updateInletTemp();
-      updateOutletTemp();
-      updateExhaustPre();
-      updateFuelRate();
-      updateBlowerPressure();
-      updateSmokeQuality();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    setInTemperature((prevTemperature) => {
-      const newTemperatureQueue = [...prevTemperature, arduinoData.inletTemp];
-      if (newTemperatureQueue.length > 8) {
-        newTemperatureQueue.shift();
-      }
-      return newTemperatureQueue;
-    });
-  }, [arduinoData.inletTemp]);
-  useEffect(() => {
-    setOutTemperature((prevTemperature) => {
-      const newTemperatureQueue = [...prevTemperature, arduinoData.outletTemp];
-      if (newTemperatureQueue.length > 8) {
-        newTemperatureQueue.shift();
-      }
-      return newTemperatureQueue;
-    });
-  }, [arduinoData.outletTemp]);
-  useEffect(() => {
-    setexhaustPressure((prevPressure) => {
-      const newPressureQueue = [...prevPressure, arduinoData.exhaustPressure];
-      if (newPressureQueue.length > 8) {
-        newPressureQueue.shift();
-      }
-      return newPressureQueue;
-    });
-  }, [arduinoData.exhaustPressure]);
-  useEffect(() => {
-    setfuelRate((prevFuel) => {
-      const newFuelQueue = [...prevFuel, arduinoData.fuelIntake];
-      if (newFuelQueue.length > 8) {
-        newFuelQueue.shift();
-      }
-      return newFuelQueue;
-    });
-  }, [arduinoData.fuelIntake]);
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
 
     socket.on("arduino-data", (data) => {
-      setArduinoData(data);
+      setInTemperature(data.inletTemp);
+      setOutTemperature(data.outletTemp);
+      setExhaustPressure(data.exhaustPressure);
+      setFuelIntake(data.fuelIntake);
+      setSmokeQuality(data.smokeQuality);
 
       setLineGraphData((prevData) => {
         const newData = {
-          labels: [...prevData.labels, arduinoData.outletTemp],
+          labels: [...prevData.labels, data.outletTemp],
           datasets: [
             {
               ...prevData.datasets[0],
-              data: [...prevData.datasets[0].data, arduinoData.inletTemp],
+              data: [...prevData.datasets[0].data, data.inletTemp],
             },
           ],
         };
@@ -195,7 +89,7 @@ const Dashboard = () => {
     return () => {
       socket.disconnect(); // Clean up socket connection when component unmounts
     };
-  }, [arduinoData]);
+  }, []);
 
   return (
     <>
