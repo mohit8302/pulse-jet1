@@ -35,7 +35,8 @@ ChartJS.register(
   Legend
 );
 
-const ENDPOINT = "http://localhost:5173";
+const ENDPOINT = "https://pulse-backend-ag3fk60ce-mohits-projects-173e27ad.vercel.app";
+
 
 const Dashboard2 = () => {
   const [inTemperature, setInTemperature] = useState([]);
