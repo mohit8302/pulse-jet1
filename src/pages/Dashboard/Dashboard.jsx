@@ -5,7 +5,7 @@ import Speedometer from "../../components/Speedometer/Speedometer";
 import { AmbientTemperature } from "../../components/ambientTemp";
 import socketIOClient from "socket.io-client";
 import { useState, useEffect } from "react";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import {
   Chart as ChartJS,
@@ -29,11 +29,10 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const ENDPOINT = "https://pulse-backend-ag3fk60ce-mohits-projects-173e27ad.vercel.app/server.js";
-
+const ENDPOINT =
+  "https://pulse-backend-ag3fk60ce-mohits-projects-173e27ad.vercel.app/server.js";
 
 const Dashboard = () => {
-
   const [inTemperature, setInTemperature] = useState([]);
   const [outTemperature, setOutTemperature] = useState([]);
   const [exhaustPressure, setexhaustPressure] = useState([]);
@@ -61,12 +60,96 @@ const Dashboard = () => {
       },
     ],
   });
+  useEffect(() => {
+    updateInletTemp();
+    updateOutletTemp();
+    updateExhaustPre();
+    updateFuelRate();
 
+    const intervalId = setInterval(() => {
+      updateInletTemp();
+      updateOutletTemp();
+      updateExhaustPre();
+      updateFuelRate();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    setInTemperature((prevTemperature) => {
+      const newTemperatureQueue = [...prevTemperature, arduinoData.inletTemp];
+      if (newTemperatureQueue.length > 8) {
+        newTemperatureQueue.shift();
+      }
+      return newTemperatureQueue;
+    });
+  }, [arduinoData.inletTemp]);
+  useEffect(() => {
+    setOutTemperature((prevTemperature) => {
+      const newTemperatureQueue = [...prevTemperature, arduinoData.outletTemp];
+      if (newTemperatureQueue.length > 8) {
+        newTemperatureQueue.shift();
+      }
+      return newTemperatureQueue;
+    });
+  }, [arduinoData.outletTemp]);
+  useEffect(() => {
+    setexhaustPressure((prevPressure) => {
+      const newPressureQueue = [...prevPressure, arduinoData.exhaustPressure];
+      if (newPressureQueue.length > 8) {
+        newPressureQueue.shift();
+      }
+      return newPressureQueue;
+    });
+  }, [arduinoData.exhaustPressure]);
+  useEffect(() => {
+    setfuelRate((prevFuel) => {
+      const newFuelQueue = [...prevFuel, arduinoData.fuelIntake];
+      if (newFuelQueue.length > 8) {
+        newFuelQueue.shift();
+      }
+      return newFuelQueue;
+    });
+  }, [arduinoData.fuelIntake]);
+  const updateInletTemp = () => {
+    const newInletTemp = Math.floor(Math.random() * 1501);
+
+    setArduinoData((prevData) => ({
+      ...prevData,
+      inletTemp: newInletTemp,
+    }));
+  };
+  const updateOutletTemp = () => {
+    const newInletTemp = Math.floor(Math.random() * 1501);
+
+    setArduinoData((prevData) => ({
+      ...prevData,
+      outletTemp: newInletTemp,
+    }));
+  };
+  const updateExhaustPre = () => {
+    const newInletPre = Math.floor(Math.random() * 1501);
+
+    setArduinoData((prevData) => ({
+      ...prevData,
+      exhaustPressure: newInletPre,
+    }));
+  };
+  const updateFuelRate = () => {
+    const newInletFuel = Math.floor(Math.random() * 1501);
+
+    setArduinoData((prevData) => ({
+      ...prevData,
+      fuelIntake: newInletFuel,
+    }));
+  };
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
 
     socket.on("arduino-data", (data) => {
+      // console.log(data);
       setInTemperature(data.inletTemp);
       setOutTemperature(data.outletTemp);
       setExhaustPressure(data.exhaustPressure);
@@ -117,13 +200,14 @@ const Dashboard = () => {
                       backgroundColor: "rgb(53, 162, 235)",
                       borderColor: "rgba(53, 162, 235, 0.5)",
                       borderWidth: 1,
-                    },{
+                    },
+                    {
                       label: "Outlet Temp",
                       data: outTemperature,
                       backgroundColor: "red",
                       borderColor: "red",
                       borderWidth: 1,
-                    }
+                    },
                   ],
                 }}
                 options={{
@@ -153,7 +237,7 @@ const Dashboard = () => {
             <div className="LineChart">
               <Line
                 data={{
-                  labels: [1,2,3,4,5,6,7,8],
+                  labels: [1, 2, 3, 4, 5, 6, 7, 8],
                   datasets: [
                     {
                       label: "Exhaust Pressure",
@@ -189,7 +273,7 @@ const Dashboard = () => {
                     },
                     y: {
                       min: 0,
-                      max: 5,
+                      max: 1500,
                     },
                   },
                 }}
@@ -203,7 +287,7 @@ const Dashboard = () => {
             <div className="LineChart">
               <Line
                 data={{
-                  labels: [1,2,3,4,5,6,7,8],
+                  labels: [1, 2, 3, 4, 5, 6, 7, 8],
                   datasets: [
                     {
                       label: "Exhaust Pressure",
@@ -248,7 +332,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-        
     </>
   );
 };
